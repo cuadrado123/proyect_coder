@@ -32,13 +32,39 @@ class Productos {
 			return false;
 		}
 	}
-
 }
 
 function buscar_prod(producto) {
 	return producto.nombre == compra_user;
 }
 
+function vuelto_compra(abonar, total) {
+	if (abonar > total) {
+		total = abonar - total;
+		console.log("Su vuelto es: ", total);
+	} else if (abonar == total) {
+		total = abonar - total;
+		console.log("Gracias por pagar exacto mi estimado");
+	} else {
+		console.log(
+			"Flaco falta plata aca que paso pa me abonaste ",
+			parseFloat(abonar)
+		);
+	}
+}
+
+function medios_de_pago(cuotas, total) {
+	if (cuotas == 3) {
+		let interes = total * 0.15;
+		return interes;
+	} else if (cuotas == 6) {
+		let interes = total * 0.3;
+		return interes;
+	} else if (cuotas == 12) {
+		let interes = total * 0.8;
+		return interes;
+	}
+}
 
 // PRODUCTOS POR DEFAULT
 let lista_productos = [];
@@ -48,6 +74,22 @@ lista_productos.push(new Productos("Monopatin", 30000, 8));
 lista_productos.push(new Productos("Casco", 800, 3));
 lista_productos.push(new Productos("Rodillera", 600, 5));
 lista_productos.push(new Productos("Cubierta", 1100, 4));
+
+let admin = prompt("Si es supervisor y desea cargar articulos presione 1");
+//CARGA DE PRODUCTOS MANUAL
+if(admin == 1){
+	for (let i = 0; i <=2; i++){
+		let nombre = prompt("Ingrese el nombre del articulo");
+		let precio = prompt("Ingrese el precio del articulo");
+		let stock = prompt("Ingrese el stock del articulo");
+	
+		let producto = new Productos(nombre, precio, stock);
+	
+		lista_productos.push(producto)
+	}
+}else{
+	console.log("Bienvenido estos son los articulos en venta")
+}
 
 // MUESTRA LOS PRODUCTOS CARGAGOS
 console.log("Productos");
@@ -91,11 +133,38 @@ do {
 			console.log("No se encontro el articulo ", compra_user);
 		}
 		// INDICO EL TOTAL DE LA VENTA
-		console.log("El total de la compra final es" , total);
+		console.log("El total de la compra final es", total);
 	} else {
 		console.log("Fin de la compra vuelva pronto");
 	}
-	
+
 } while (opcion != 2)
 
 
+let cuotas, resumen, abonar;
+let medio_pago = prompt("Elegir su medio de pago EFECTIVO o TARJETA");
+
+// Metodo para elegir el medio de pago 
+while (medio_pago != "EFECTIVO" || medio_pago != "TARJETA") {
+  if (medio_pago == "EFECTIVO") {
+	console.log("Se paga de contado en 1 pago");
+	console.log("Total de la compra: ", total);
+	abonar = parseFloat(prompt("Con cuanto abonaria?"));
+	vuelto_compra(abonar, total);
+	break;
+  } else if (medio_pago == "TARJETA") {
+	cuotas = prompt("Elija en cuantas cuotas desea hacerlo 3, 6, 12");
+	resumen = total + medios_de_pago(cuotas, total);
+
+	console.log("Total con interes: ", resumen);
+	console.log("Total por cuotas seria: " + resumen / cuotas);
+
+	abonar = parseFloat(prompt("Con cuanto abonaria?"));
+
+	vuelto_compra(abonar, resumen);
+	break;
+  } else {
+	console.log("Medio de pago incorrecto")
+	medio_pago = prompt("Elegir su medio de pago EFECTIVO o TARJETA");
+  }
+}
