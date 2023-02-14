@@ -58,7 +58,8 @@ for (let producto of lista_productos) {
 
 
 // VENTA DEL ARTICULO
-let opcion, compra_user, total;
+let opcion, compra_user;
+let total = 0;
 
 do {
 	opcion = prompt("Si quire hacer una compra presione 1 sino 2")
@@ -66,15 +67,16 @@ do {
 	// USUARIO COMPRA ARTICULOS
 	if (opcion == 1) {
 		compra_user = prompt("Ingrese el nombre del producto a comprar");
-
+		// BUSCO SI EXISTE EL ARTICULO
 		let resul_search = lista_productos.find(buscar_prod);
 		console.log(resul_search);
 		if (resul_search != undefined) {
+			// SE VALIDA EL STOCK
 			if (resul_search.get_stock()) {
 				let unidades = prompt("Ingresa cuanto de va a llevar");
 				if (resul_search.venta_articulos(unidades)) {
 					console.log(`Usted esta llevando ${unidades} de ${resul_search.nombre}`);
-					console.log(`El total es ${resul_search.precio}`);
+					total += resul_search.precio;
 				}
 				else {
 					console.log("No se puede realizar la compra del articulo, stock no disponible");
@@ -88,12 +90,12 @@ do {
 		else {
 			console.log("No se encontro el articulo ", compra_user);
 		}
+		// INDICO EL TOTAL DE LA VENTA
+		console.log("El total de la compra final es" , total);
 	} else {
 		console.log("Fin de la compra vuelva pronto");
 	}
 	
 } while (opcion != 2)
-
-
 
 
