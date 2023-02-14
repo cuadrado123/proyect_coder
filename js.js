@@ -41,15 +41,12 @@ function buscar_prod(producto) {
 function vuelto_compra(abonar, total) {
 	if (abonar > total) {
 		total = abonar - total;
-		console.log("Su vuelto es: ", total);
+		console.log("Su vuelto es: ", "$"+total);
 	} else if (abonar == total) {
 		total = abonar - total;
 		console.log("Gracias por pagar exacto mi estimado");
 	} else {
-		console.log(
-			"Flaco falta plata aca que paso pa me abonaste ",
-			parseFloat(abonar)
-		);
+		console.log("No es suficiente para abonar ", parseFloat(abonar));
 	}
 }
 
@@ -76,33 +73,41 @@ lista_productos.push(new Productos("Rodillera", 600, 5));
 lista_productos.push(new Productos("Cubierta", 1100, 4));
 
 let admin = prompt("Si es supervisor y desea cargar articulos presione 1");
+
 //CARGA DE PRODUCTOS MANUAL
-if(admin == 1){
-	for (let i = 0; i <=2; i++){
+if (admin == 1) {
+	for (let i = 0; i <= 2; i++) {
 		let nombre = prompt("Ingrese el nombre del articulo");
 		let precio = prompt("Ingrese el precio del articulo");
 		let stock = prompt("Ingrese el stock del articulo");
-	
+
 		let producto = new Productos(nombre, precio, stock);
-	
+
 		lista_productos.push(producto)
 	}
-}else{
+} else {
 	console.log("Bienvenido estos son los articulos en venta")
 }
 
 // MUESTRA LOS PRODUCTOS CARGAGOS
-console.log("Productos");
 
 for (let producto of lista_productos) {
 	producto.get_datos();
 }
 
 
-// VENTA DEL ARTICULO
+// VARIABLES
 let opcion, compra_user;
 let total = 0;
+let cuotas, resumen, abonar;
 
+// crea un nuevo objeto `Date`
+var today = new Date();
+ 
+// obtener la fecha y la hora
+var now = today.toLocaleString();
+
+// VENTA DEL ARTICULO
 do {
 	opcion = prompt("Si quire hacer una compra presione 1 sino 2")
 
@@ -115,7 +120,7 @@ do {
 		if (resul_search != undefined) {
 			// SE VALIDA EL STOCK
 			if (resul_search.get_stock()) {
-				let unidades = prompt("Ingresa cuanto de va a llevar");
+				let unidades = prompt("Ingresa cuanto unidades se va a llevar");
 				if (resul_search.venta_articulos(unidades)) {
 					console.log(`Usted esta llevando ${unidades} de ${resul_search.nombre}`);
 					total += resul_search.precio;
@@ -132,39 +137,42 @@ do {
 		else {
 			console.log("No se encontro el articulo ", compra_user);
 		}
-		// INDICO EL TOTAL DE LA VENTA
-		console.log("El total de la compra final es", total);
-	} else {
-		console.log("Fin de la compra vuelva pronto");
+	} else if(opcion == 2){
+		console.log("Gracias por su compra");
 	}
+
 
 } while (opcion != 2)
 
 
-let cuotas, resumen, abonar;
+// SE SELECCIONA UN MEDIO DE PAGO
 let medio_pago = prompt("Elegir su medio de pago EFECTIVO o TARJETA");
 
 // Metodo para elegir el medio de pago 
 while (medio_pago != "EFECTIVO" || medio_pago != "TARJETA") {
-  if (medio_pago == "EFECTIVO") {
-	console.log("Se paga de contado en 1 pago");
-	console.log("Total de la compra: ", total);
-	abonar = parseFloat(prompt("Con cuanto abonaria?"));
-	vuelto_compra(abonar, total);
-	break;
-  } else if (medio_pago == "TARJETA") {
-	cuotas = prompt("Elija en cuantas cuotas desea hacerlo 3, 6, 12");
-	resumen = total + medios_de_pago(cuotas, total);
+	if (medio_pago == "EFECTIVO") {
+		console.log("Se paga de contado en 1 pago");
+		console.log("Total de la compra: ", "$",total, " Fecha:", now);
+		abonar = parseFloat(prompt("Con cuanto abonaria?"));
+		vuelto_compra(abonar, total);
+		console.log("Fin de la compra vuelva pronto");
+		break;
+	} else if (medio_pago == "TARJETA") {
+		cuotas = prompt("Elija en cuantas cuotas desea hacerlo 3, 6, 12");
+		resumen = total + medios_de_pago(cuotas, total);
 
-	console.log("Total con interes: ", resumen);
-	console.log("Total por cuotas seria: " + resumen / cuotas);
+		console.log("Total con interes: ", resumen);
+		console.log("Total por cuotas seria: " , "$",resumen / cuotas , " Fecha:", now);
 
-	abonar = parseFloat(prompt("Con cuanto abonaria?"));
+		abonar = parseFloat(prompt("Con cuanto abonaria?"));
 
-	vuelto_compra(abonar, resumen);
-	break;
-  } else {
-	console.log("Medio de pago incorrecto")
-	medio_pago = prompt("Elegir su medio de pago EFECTIVO o TARJETA");
-  }
+		vuelto_compra(abonar, resumen);
+		console.log("Fin de la compra vuelva pronto");
+		break;
+	} else {
+		console.log("Medio de pago incorrecto")
+		medio_pago = prompt("Elegir su medio de pago EFECTIVO o TARJETA");
+	}
 }
+
+
